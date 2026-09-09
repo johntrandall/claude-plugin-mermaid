@@ -1,0 +1,6 @@
+{
+  "name": "mermaid",
+  "description": "Mermaid diagram authoring and auto-rendering: mermaid-syntax (authoring reference), mermaid-studio, mermaid-architecture-iconify, plus a PostToolUse hook that validates every .mermaid/.mmd/.puml write by attempting a strict render (degrades gracefully when the diagram-render CLI is absent).",
+  "author": { "name": "John Randall", "email": "john@johnrandall.com" },
+  "keywords": ["mermaid", "diagrams", "rendering"]
+}
