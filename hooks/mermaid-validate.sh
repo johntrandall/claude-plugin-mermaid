@@ -125,7 +125,7 @@ $OUTPUT
 
 The diagram source has a syntax error. Fix it before continuing.
 
-Common pitfalls (see ~/.claude/skills/mermaid-syntax/SKILL.md for full list):
+Common pitfalls (see the mermaid-syntax skill (mermaid plugin) for full list):
 - Unquoted special characters: A[Click (here)] → A["Click (here)"]
 - Reserved words as IDs: end, default, style, class, click, href
 - Subgraph linking from nested to parent
