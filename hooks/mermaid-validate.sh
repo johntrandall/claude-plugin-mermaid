@@ -58,7 +58,7 @@ Mermaid style warning: markdown bold (\`**...**\`) in $FILE_PATH
 $hits
 Use \`<b>...</b>\` instead of \`**...**\` for cross-renderer compatibility
 (Obsidian's mermaid is older than mmdc's, and markdown isn't processed inside
-<div> wrappers even in modern mermaid). See ~/.claude/skills/mermaid-syntax.
+<div> wrappers even in modern mermaid). See the mermaid-syntax skill (mermaid plugin).
 EOF
   fi
 }
