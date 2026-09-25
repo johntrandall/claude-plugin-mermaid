@@ -792,3 +792,12 @@ This skill was vendored from [awesome-skills/mermaid-syntax-skill](https://githu
 ## Related
 
 - **Need deeper docs?** Use the `documentation-lookup` skill — it routes lookups to Dash (if a docset is installed), Context7, or web search. If the docs aren't available in any source, use the `vendor-docs` skill to acquire them.
+
+---
+
+## Local Addendum (not upstream — do not remove on re-vendor)
+
+Findings from local usage, added below the vendored content per this project's convention of never editing vendored text directly. Re-apply this section after any re-clone/diff update from upstream.
+
+- **mermaid-cli (`mmdc`) 11.12 clips or overlaps any subgraph title longer than one line.** Cluster height is computed before the title wraps (~200px allotted). The `.mmd` source parses clean — the defect only shows up in the rendered raster/SVG. Workaround: keep subgraph titles to one line. **Verified** 2026-09-24 (hit on four diagrams in one session, fixed each time by shortening the title). Also recorded in memory `discovery-mermaid-cluster-title-wrap-clips` (admin-technical project memory) — this entry is the skill-level pointer, not a duplicate.
+- **`securityLevel` in mermaid front matter does not change `mmdc` (static SVG) output at all.** The same source rendered at `strict` / `loose` / `sandbox` produced byte-identical SVGs in local testing, with `<a xlink:href>` anchors present in all three (consistent with the existing note above that `mmdc` emits click anchors regardless of `securityLevel`). The setting only matters for **in-browser** rendering (mermaid.js, Mermaid Live Editor, embedded previews) per the table above — not for anything produced by the CLI. **Additionally: a static SVG's click-through anchors are only live when the SVG file is opened directly in a browser.** They are inert when the SVG is embedded as `<img>`, and inert in GitHub's and Obsidian's markdown previews (both sandbox rendered SVGs). If drill-down needs to work from a doc preview, it won't via `click` alone. **Verified** 2026-09-24 (three renders at different `securityLevel` values, diffed identical; click behavior checked directly-opened vs. `<img>`-embedded vs. GitHub/Obsidian preview).
