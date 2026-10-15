@@ -10,17 +10,15 @@ freshness:
 
 # Mermaid + Iconify: Real Icons in Diagrams
 
-This skill is a **focused supplement** to [`mermaid-syntax`](~/.claude/skills/mermaid-syntax/SKILL.md). That skill covers general syntax and the 20+ common pitfalls. This skill covers **only iconography** — how to put real product logos in a Mermaid diagram instead of colored rectangles.
+This skill is a **focused supplement** to [`mermaid-syntax`](../mermaid-syntax/SKILL.md). That skill covers general syntax and the 20+ common pitfalls. This skill covers **only iconography** — how to put real product logos in a Mermaid diagram instead of colored rectangles.
 
 ## Am I the right skill?
 
 You landed here because you mentioned icons in a diagram. Sanity check:
 
-- **Designing a NEW workflow?** → `diagram-workflow-design` first. Icons come after structure is settled.
-- **Authoring a flowchart (no icons needed)?** → `diagram-workflow-authoring`.
-- **Mermaid parse error / syntax issue?** → `mermaid-syntax`.
-- **Multi-engine output or non-mermaid creation?** → `mermaid-studio`.
-- **Unsure where to start?** → `diagram-meta` (top-level router).
+- **Designing a new workflow?** Settle the structure first (with a workflow-design skill if you have one); icons come after.
+- **Mermaid parse error / syntax issue?** → `mermaid-syntax` (this plugin).
+- **PNG / ASCII output, batch rendering, or C4?** → `mermaid-studio` (this plugin).
 
 Stay here when: you're explicitly putting product logos / icons (Iconify packs) into a Mermaid diagram (`architecture-beta` or the v11.3+ flowchart `icon` shape).
 
@@ -165,7 +163,7 @@ architecture-beta
 
 ### Architecture-beta limitations (the "beta" is real)
 
-- **Labels are restricted to `[a-zA-Z0-9_ ]`.** Hyphens, parens, slashes, colons all break the parser. Use underscores: `[API_Gateway]` not `[API-Gateway]`. (See pitfall #18 in [mermaid-syntax](~/.claude/skills/mermaid-syntax/SKILL.md).)
+- **Labels are restricted to `[a-zA-Z0-9_ ]`.** Hyphens, parens, slashes, colons all break the parser. Use underscores: `[API_Gateway]` not `[API-Gateway]`. (See pitfall #18 in [mermaid-syntax](../mermaid-syntax/SKILL.md).)
 - **No `classDef` styling.** Architecture-beta does not honor flowchart-style class definitions. Visual customization is limited to the icons themselves.
 - **Layout is automatic and often awkward.** No manual positioning beyond `T/B/L/R` edge anchors. Complex diagrams may produce odd routing — the engine prioritizes correctness over aesthetics.
 - **Edges into/out of groups need `{group}` modifier.** To draw an edge from a service to a group boundary: `serviceId{groupId}:R --> L:otherId`.
@@ -239,7 +237,7 @@ Icon support is **not uniform** across renderers. Verify on your target:
 
 **Practical rule:** If the diagram will be viewed in a generic markdown renderer (GitHub, Obsidian without configuration), prefer **built-in `architecture-beta` icons** (`cloud`/`database`/`disk`/`internet`/`server`) so the diagram degrades gracefully. Use Iconify packs only when you control the render pipeline (mmdc-generated SVG checked into the repo, or a custom-bundled web app).
 
-In this codebase, the staging hook regenerates `.svg` from `.mermaid` via mmdc — to use Iconify, the hook's `mmdc` invocation must include `--iconPacks`. Verify before committing.
+If your repo regenerates `.svg` from `.mermaid` with a hook that calls mmdc, that invocation must include `--iconPacks` to use Iconify. Verify before committing.
 
 ## 6. Gotchas and verification
 
@@ -275,12 +273,10 @@ Need icons in a Mermaid diagram?
 ## 8. Cross-references
 
 - **`mermaid-syntax`** — escaping, reserved words, common errors. Read first if the diagram won't parse at all. Pitfall #18 covers architecture-beta label restrictions.
-- **`diagram-workflow-authoring`** — authoring conventions (color, classDef, legends). Note: `classDef` does not style icon shapes; this skill's icon nodes are visually self-contained.
-- **`diagram-workflow-design`** — design process for workflow diagrams (phase vs stage, structural honesty, iterative verification).
-- **`diagram-style`** (`dev-docs/conventions/diagram-style.md` inside the JKRE repo — relative path that only resolves when this skill is loaded from inside that repo; do not treat as a global path) — the project's classDef palette. When mixing icon nodes and styled rectangles, keep both visual languages consistent (e.g., color edge styles match the icons' brand hues).
-- **Diagrams in this repo are auto-rendered to SVG on stage** — see global rule "Diagrams: Mermaid → SVG" in `~/.claude/CLAUDE.md`. Edits to icon-bearing `.mermaid` files require the staging hook's `mmdc` to be invoked with `--iconPacks`.
+- **`mermaid-studio`** — multi-format rendering with `--icons`.
+- **Your project's diagram style guide, if it has one.** `classDef` does not style icon shapes; icon nodes are visually self-contained. When mixing icon nodes and styled rectangles, keep both visual languages consistent (for example, edge colours that match the icons' brand hues).
 
-## 9. Field-validated lessons (2026-04-28 JKRE migration)
+## 9. Field-validated lessons (2026-04-28 migration)
 
 Verified via a 14-diagram production migration. Update this section when subsequent migrations surface new lessons.
 
@@ -330,7 +326,7 @@ The mdi pack's icons are monochrome and accept the URL color param. Brand-color 
 
 ### When agents migrate, verify before promoting
 
-If you delegate icon migration to a sub-agent, do NOT directly promote the agent's output to canonical without a structural diff against HEAD. We caught content drift on slides 13/14: the agent restructured the tenant-forwarding flow (added an approval gate that contradicted the user's "pure pass-through" intent) and compressed descriptive labels into pill-form on slides 02/09. The fix was to revert affected files to HEAD and re-apply icons surgically.
+If you delegate icon migration to a sub-agent, do NOT directly promote the agent's output to canonical without a structural diff against HEAD. In one migration the agent restructured a flow (adding an approval gate the author had not asked for) and compressed descriptive labels into pill form on other slides. The fix was to revert affected files to HEAD and re-apply icons surgically.
 
 The verification pattern: `git show HEAD:<file>` vs working tree, list every node/edge/label that exists in HEAD but is missing from working tree, and check before committing.
 
@@ -353,4 +349,4 @@ Browse all params: https://docs.iconify.design/api/svg.html
 
 ## Related
 
-- **Need deeper docs?** Use the `documentation-lookup` skill — it routes lookups to Dash (if a docset is installed), Context7, or web search. If the docs aren't available in any source, use the `vendor-docs` skill to acquire them.
+- **Need deeper docs?** Use the authoritative sources above, or a documentation tool you have installed (for example a Context7 or Dash lookup).

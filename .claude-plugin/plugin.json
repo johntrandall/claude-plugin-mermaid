@@ -1,6 +1,10 @@
 {
   "name": "mermaid",
-  "description": "Mermaid diagram authoring and auto-rendering: mermaid-syntax (authoring reference), mermaid-studio, mermaid-architecture-iconify, plus a PostToolUse hook that validates every .mermaid/.mmd/.puml write by attempting a strict render (degrades gracefully when the diagram-render CLI is absent).",
-  "author": { "name": "John Randall", "email": "john@johnrandall.com" },
-  "keywords": ["mermaid", "diagrams", "rendering"]
+  "version": "1.0.0",
+  "description": "Mermaid diagram authoring and rendering: mermaid-syntax (syntax and pitfalls reference), mermaid-studio (SVG/PNG/ASCII rendering, C4, theming), mermaid-architecture-iconify (real product icons), plus a PostToolUse hook that checks every .mermaid/.mmd/.puml write.",
+  "author": { "name": "John Randall", "url": "https://github.com/johntrandall" },
+  "homepage": "https://github.com/johntrandall/claude-plugin-mermaid",
+  "repository": "https://github.com/johntrandall/claude-plugin-mermaid",
+  "license": "MIT",
+  "keywords": ["mermaid", "diagrams", "rendering", "iconify"]
 }

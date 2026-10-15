@@ -23,16 +23,15 @@ Mermaid is the right default — fast to write, renders inline in markdown previ
 - You're piling up invisible-edge hacks to force ranking and the diagram source is getting harder to read than it would be in a more structured tool.
 - Icon-heavy architecture diagram (cloud provider logos, tech-stack icons). Mermaid icons are limited to Font Awesome via `fa:` prefix; d2's `icon:` takes any URL.
 
-Switching is a *fallback*, not a default — the cost is losing inline GitHub/Obsidian/mermaid.live rendering and committing a parallel `.d2 → .svg` render hook. Pay that cost only when mermaid's friction visibly exceeds the loss. See `d2-diagrams` skill for the migration table and the invisible-edge layout-shaping pattern.
+Switching is a *fallback*, not a default — the cost is losing inline GitHub/Obsidian/mermaid.live rendering and committing a parallel `.d2 → .svg` render hook. Pay that cost only when mermaid's friction visibly exceeds the loss. If you have a D2 skill installed, it covers the migration and invisible-edge layout shaping; otherwise see https://d2lang.com.
 
 ## Am I the right skill?
 
 You landed here because you're touching a `.mermaid` file or hit a syntax error. Sanity check:
 
-- **Designing a workflow (operator gates, wait states, re-entry)?** → `diagram-workflow-design` first.
-- **Applying authoring conventions (classDef, shapes, colors, click directives, labels)?** → `diagram-workflow-authoring`.
-- **Picking which diagram type to use?** → `diagram-selection`.
-- **Unsure where to start?** → `diagram-meta` (top-level router for the diagram cluster).
+- **Designing a workflow, applying house authoring conventions (classDef, colors, labels), or choosing which diagram type to use?** If a more specific diagram skill is installed for that, prefer it.
+- **Need icons in an architecture diagram?** → `mermaid-architecture-iconify` (this plugin).
+- **Need PNG / ASCII output, batch rendering, or C4 / theming help?** → `mermaid-studio` (this plugin).
 
 If you're debugging a parse error or looking up escape rules / reserved words / v11 syntax — stay here.
 
@@ -780,24 +779,19 @@ Working examples in `examples/`:
 - **Official Docs:** https://mermaid.js.org/intro/syntax-reference.html
 - **GitHub:** https://github.com/mermaid-js/mermaid
 
-### Internal Resources
-
-- **[diagram-workflow-authoring skill](~/.claude/skills/diagram-workflow-authoring/SKILL.md)** — authoring conventions (classDef styling, color semantics, legends, flow guidelines). This skill (`mermaid-syntax`) covers syntax correctness; `diagram-workflow-authoring` covers authoring quality. Under Architecture B of the diagram skill cluster, `mermaid-syntax` auto-invokes broadly on any mermaid work; `diagram-workflow-authoring` auto-invokes only when an authoring decision (classDef / shape / label / click-through) is in play AND the file is a flowchart — otherwise it's invoked explicitly via `diagram-meta`.
-- **[diagram-workflow-design skill](~/.claude/skills/diagram-workflow-design/SKILL.md)** — design process for new workflow diagrams (phase vs stage, structural honesty, iterative verification).
-
 ### Source
 
-This skill was vendored from [awesome-skills/mermaid-syntax-skill](https://github.com/awesome-skills/mermaid-syntax-skill) at commit `933d1a6` on 2026-03-20. No upstream tracking — to update, re-clone and diff.
+This skill was vendored from [awesome-skills/mermaid-syntax-skill](https://github.com/awesome-skills/mermaid-syntax-skill) at commit `933d1a6` on 2026-03-20. No upstream tracking — to update, re-clone and diff. Licence: the upstream README declares MIT; see `THIRD_PARTY.md` at the plugin root.
 
 ## Related
 
-- **Need deeper docs?** Use the `documentation-lookup` skill — it routes lookups to Dash (if a docset is installed), Context7, or web search. If the docs aren't available in any source, use the `vendor-docs` skill to acquire them.
+- **Need deeper docs?** Use the official docs at https://mermaid.js.org, or a documentation tool you have installed (for example a Context7 or Dash lookup).
 
 ---
 
 ## Local Addendum (not upstream — do not remove on re-vendor)
 
-Findings from local usage, added below the vendored content per this project's convention of never editing vendored text directly. Re-apply this section after any re-clone/diff update from upstream.
+Findings from use with mermaid-cli, added below the vendored content so the vendored text stays unedited. Re-apply this section after any re-clone/diff update from upstream.
 
-- **mermaid-cli (`mmdc`) 11.12 clips or overlaps any subgraph title longer than one line.** Cluster height is computed before the title wraps (~200px allotted). The `.mmd` source parses clean — the defect only shows up in the rendered raster/SVG. Workaround: keep subgraph titles to one line. **Verified** 2026-09-24 (hit on four diagrams in one session, fixed each time by shortening the title). Also recorded in memory `discovery-mermaid-cluster-title-wrap-clips` (admin-technical project memory) — this entry is the skill-level pointer, not a duplicate.
+- **mermaid-cli (`mmdc`) 11.12 clips or overlaps any subgraph title longer than one line.** Cluster height is computed before the title wraps (~200px allotted). The `.mmd` source parses clean — the defect only shows up in the rendered raster/SVG. Workaround: keep subgraph titles to one line. **Verified** 2026-09-24 (hit on four diagrams in one session, fixed each time by shortening the title).
 - **`securityLevel` in mermaid front matter does not change `mmdc` (static SVG) output at all.** The same source rendered at `strict` / `loose` / `sandbox` produced byte-identical SVGs in local testing, with `<a xlink:href>` anchors present in all three (consistent with the existing note above that `mmdc` emits click anchors regardless of `securityLevel`). The setting only matters for **in-browser** rendering (mermaid.js, Mermaid Live Editor, embedded previews) per the table above — not for anything produced by the CLI. **Additionally: a static SVG's click-through anchors are only live when the SVG file is opened directly in a browser.** They are inert when the SVG is embedded as `<img>`, and inert in GitHub's and Obsidian's markdown previews (both sandbox rendered SVGs). If drill-down needs to work from a doc preview, it won't via `click` alone. **Verified** 2026-09-24 (three renders at different `securityLevel` values, diffed identical; click behavior checked directly-opened vs. `<img>`-embedded vs. GitHub/Obsidian preview).

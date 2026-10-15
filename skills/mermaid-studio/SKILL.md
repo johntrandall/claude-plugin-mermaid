@@ -1,6 +1,6 @@
 ---
 name: mermaid-studio
-description: Multi-format Mermaid rendering (SVG / PNG / ASCII) and domain references for non-flowchart Mermaid types. Auto-invoke when the user is working with Mermaid specifically AND any of: PNG / ASCII output, batch rendering across many `.mermaid` files, C4 architecture diagrams, AWS architecture-beta with service icons, or non-flowchart Mermaid types (sequence, state, class, ERD, sankey, mindmap, timeline, git graph) IN MERMAID CONTEXT. Do NOT fire on bare diagram-type words ("a sequence diagram", "an ERD", "a C4 diagram", "a Gantt chart") when the user might be using D2, PlantUML, Structurizr, drawio, or another tool — those have their own renderers. For flowchart authoring conventions, prefer diagram-workflow-authoring. For mermaid syntax errors or parse failures, prefer mermaid-syntax. For designing a new workflow with operator gates / wait states, prefer diagram-workflow-design. For routing between diagram skills, see diagram-meta. Do NOT use for non-Mermaid image generation, data plotting with chart libraries, or general documentation writing.
+description: Multi-format Mermaid rendering (SVG / PNG / ASCII) and domain references for non-flowchart Mermaid types. Auto-invoke when the user is working with Mermaid specifically AND any of: PNG / ASCII output, batch rendering across many `.mermaid` files, C4 architecture diagrams, AWS architecture-beta with service icons, or non-flowchart Mermaid types (sequence, state, class, ERD, sankey, mindmap, timeline, git graph) IN MERMAID CONTEXT. Do NOT fire on bare diagram-type words ("a sequence diagram", "an ERD", "a C4 diagram", "a Gantt chart") when the user might be using D2, PlantUML, Structurizr, drawio, or another tool — those have their own renderers. For mermaid syntax errors or parse failures, prefer mermaid-syntax. For flowchart authoring or workflow design, prefer a more specific diagram skill if one is installed. Do NOT use for non-Mermaid image generation, data plotting with chart libraries, or general documentation writing.
 license: CC-BY-4.0
 metadata:
   author: Felipe Rodrigues - github.com/felipfr
@@ -15,14 +15,11 @@ Expert-level Mermaid diagram creation, validation, and multi-format rendering. C
 
 You landed here for "create a mermaid diagram." Sanity check before the Golden Rules:
 
-- **Authoring a flowchart / workflow?** → `diagram-workflow-authoring` covers John's mermaid flowchart authoring conventions.
-- **Designing a new workflow with operator gates / wait states?** → `diagram-workflow-design` first.
-- **Mermaid syntax error / parse failure?** → `mermaid-syntax`.
-- **Architecture diagram with real product logos?** → `mermaid-architecture-iconify`.
-- **Picking which diagram type to use?** → `diagram-selection`.
-- **Unsure where to start?** → `diagram-meta` (top-level router for the diagram cluster).
+- **Mermaid syntax error / parse failure?** → `mermaid-syntax` (this plugin).
+- **Architecture diagram with real product logos?** → `mermaid-architecture-iconify` (this plugin).
+- **Authoring a flowchart under house conventions, designing a workflow, or choosing a diagram type?** If a more specific diagram skill is installed for that, prefer it.
 
-Stay here when: you need multi-format output (SVG + PNG + ASCII), non-flowchart Mermaid types (C4, Sankey, Gantt, mindmap, timeline, git graph), or expert-level theming guidance for a one-off mermaid diagram outside the workflow-flowchart family that `diagram-workflow-authoring` owns.
+Stay here when: you need multi-format output (SVG + PNG + ASCII), non-flowchart Mermaid types (C4, Sankey, Gantt, mindmap, timeline, git graph), or expert-level theming guidance for a one-off mermaid diagram.
 
 ## Golden Rules — Elegant Diagrams by Default
 
@@ -82,7 +79,7 @@ Use max 3-4 colors per diagram. Map colors to meaning:
 
 ## Modes of Operation
 
-> **Architecture B gate (John's modification, 2026-05-14):** This table describes what this skill does **once the agent has been routed here** (by `diagram-meta`, or by one of this skill's narrow auto-invoke triggers: PNG / ASCII / batch render / C4 / non-flowchart Mermaid type). For broad "draw a diagram" / "visualize my..." intent without a specific multi-format or non-flowchart signal, the agent should NOT default to this skill — `diagram-meta` routes elsewhere. The triggers below are descriptive of in-skill behavior, not auto-invoke contracts.
+> **Scope note (local modification):** This table describes what this skill does **once the agent has been routed here** by one of its narrow triggers (PNG / ASCII / batch render / C4 / non-flowchart Mermaid type). For a broad "draw a diagram" request without one of those signals, do not default to this skill. The triggers below describe in-skill behaviour, not auto-invoke contracts.
 
 This skill operates in three modes based on user intent:
 
@@ -312,11 +309,14 @@ If validation fails:
 
 ### 4.1 — Setup (First Run Only)
 
+`$SKILL_DIR` is this skill's folder: `${CLAUDE_PLUGIN_ROOT}/skills/mermaid-studio` when installed as a plugin. Keep the dependencies in the plugin's data folder, which survives plugin updates (the default, `$SKILL_DIR/.deps`, is replaced on every update):
+
 ```bash
+export MERMAID_STUDIO_DIR="${CLAUDE_PLUGIN_DATA}/mermaid-studio-deps"
 bash $SKILL_DIR/scripts/setup.sh
 ```
 
-This auto-installs both rendering engines and icon pack dependencies. Run once per environment.
+This auto-installs both rendering engines and icon pack dependencies. Run once per environment, and export the same `MERMAID_STUDIO_DIR` before every script below.
 
 ### 4.2 — Single Diagram Rendering
 

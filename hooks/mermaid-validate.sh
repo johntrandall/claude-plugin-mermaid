@@ -8,13 +8,15 @@
 # Obsidian's bundled Mermaid. These never block the operation.
 #
 # Scope: *.mermaid, *.mmd, *.puml file writes only.
-# Skipped silently if diagram-render is not installed (graceful degradation),
-# but soft warnings still run.
-#
-# Companion: pre-commit lefthook (~/.config/lefthook/diagram-auto-render.sh)
-# also renders + auto-stages SVGs at commit time.
+# Render validation needs the optional diagram-render CLI
+# (https://github.com/johntrandall/diagram-auto-renderer) and the renderer it
+# calls (mmdc for Mermaid, plantuml for .puml). Without them the render step is
+# skipped silently and only the text checks below run.
 
 set -euo pipefail
+
+# jq parses the hook input; without it, do nothing rather than fail every write.
+command -v jq >/dev/null 2>&1 || exit 0
 
 INPUT=$(cat)
 FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // .tool_response.filePath // ""' 2>/dev/null)
@@ -114,6 +116,12 @@ fi
 
 # Validate by rendering. Side effect: SVG gets refreshed alongside source — desired.
 if OUTPUT=$(diagram-render --strict "$FILE_PATH" 2>&1); then
+  exit 0
+fi
+
+# A missing renderer (for example mmdc) is not a syntax error: warn, never block.
+if printf '%s' "$OUTPUT" | grep -q 'tool_missing'; then
+  echo "Mermaid render check skipped for $FILE_PATH: diagram-render could not find its renderer (install mmdc: npm install -g @mermaid-js/mermaid-cli)." >&2
   exit 0
 fi
 
