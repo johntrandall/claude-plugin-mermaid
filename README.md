@@ -24,7 +24,8 @@ ASCII, and use real product icons.
   `scripts/setup.sh`, which installs `@mermaid-js/mermaid-cli`, `mermaid`, `beautiful-mermaid`
   and `puppeteer` (with a Chromium download) into the plugin's data folder.
 - **Optional, for render checks in the hook:** [`diagram-render`](https://github.com/johntrandall/diagram-auto-renderer)
-  plus `mmdc` (`npm install -g @mermaid-js/mermaid-cli`). Without them the hook still runs its
+  (`brew install johntrandall/tap/diagram-render`) plus `mmdc`
+  (`npm install -g @mermaid-js/mermaid-cli`). Without them the hook still runs its
   text checks. When `diagram-render` runs, it also writes the `.svg` next to the source.
 
 Tested on macOS. The skills are plain text and should work anywhere; the scripts need a POSIX
